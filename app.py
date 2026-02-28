@@ -93,7 +93,7 @@ with tab_calidad:
             # --- NUEVO: TRAZABILIDAD DEL HUERTO ---
             st.markdown("#### 🧑‍🌾 Información del Productor")
             col_info1, col_info2, col_info3 = st.columns(3)
-            col_info1.markdown("**👨‍🌾 Nombre:**<br>Don Jose", unsafe_allow_html=True)
+            col_info1.markdown("**👨‍🌾 Nombre:**<br>Angel Canche", unsafe_allow_html=True)
             col_info2.markdown("**🏡 Unidad Productiva:**<br>Kool-Box Sur", unsafe_allow_html=True)
             col_info3.markdown("**📍 Ubicación:**<br>Mérida, Yucatán", unsafe_allow_html=True)
             st.write("") # Espaciador
@@ -194,4 +194,3 @@ with tab_tienda:
     with col_b:
         st.warning("☀️ **Nivel 3: Off-Grid ($6,000 MXN)**\n\nPanel solar y batería. Tu huerto funcionará sin electricidad de CFE.")
         st.button("Cotizar Nivel 3", key="ctg2")
-
