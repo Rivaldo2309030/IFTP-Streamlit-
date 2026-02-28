@@ -183,7 +183,8 @@ with tab_rutas:
     st.info("📌 **Tip de ruta:** La *Central de Abastos* reporta hoy escasez de Chile Habanero. Llévalo directo ahí para maximizar tu ganancia.")
 
 # ==========================================
-# PESTAÑA 4: CATÁLOGO
+# ==========================================
+# PESTAÑA 4: CATÁLOGO Y SOPORTE (NUEVO)
 # ==========================================
 with tab_tienda:
     st.subheader("Mejora tu infraestructura paso a paso")
@@ -194,3 +195,23 @@ with tab_tienda:
     with col_b:
         st.warning("☀️ **Nivel 3: Off-Grid ($6,000 MXN)**\n\nPanel solar y batería. Tu huerto funcionará sin electricidad de CFE.")
         st.button("Cotizar Nivel 3", key="ctg2")
+
+    # --- NUEVO: SECCIÓN DE SOPORTE Y CONTACTO ---
+    st.divider()
+    st.subheader("📞 Soporte Técnico y Contacto")
+    st.write("¿Tu equipo Kool-Box necesita mantenimiento o sufrió algún daño en el campo? ¡No estás solo! Contáctanos para enviarte a uno de nuestros ingenieros.")
+    
+    col_contacto1, col_contacto2 = st.columns(2)
+    
+    with col_contacto1:
+        st.markdown("**📱 Atención a Productores (WhatsApp/Llamadas):**")
+        st.write("+52 999 123 4567")
+        st.markdown("**📧 Correo Electrónico:**")
+        st.write("soporte@koolbox.mx")
+        
+    with col_contacto2:
+        st.markdown("**🌐 Redes Sociales:**")
+        st.write("👍 Facebook: /KoolBoxYucatan")
+        st.write("📸 Instagram: @koolbox_agro")
+        st.markdown("**📍 Taller Central:**")
+        st.write("Mérida, Yucatán")
