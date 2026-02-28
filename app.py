@@ -1,115 +1,151 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from datetime import timedelta, date
+from datetime import date
 
 # --- CONFIGURACIÓN DE LA APP ---
 st.set_page_config(page_title="Kool-Box Ecosystem", page_icon="🌱", layout="wide")
 
+# CSS para ocultar menús y mejorar el diseño visual
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
-    .kpi-card { background-color: #f1f8e9; padding: 15px; border-radius: 10px; border-left: 5px solid #2e7d32; }
+    .kpi-card { background-color: #f1f8e9; padding: 15px; border-radius: 10px; border-left: 5px solid #2e7d32; margin-bottom: 10px;}
+    .sensor-card { background-color: #ffffff; padding: 15px; border-radius: 10px; border: 1px solid #e0e0e0; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);}
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🌱 Kool-Box: Ecosistema Inteligente")
-st.markdown("Integración Total: Del campo automatizado al mercado digital.")
+st.title("🌱 Kool-Box: Inteligencia Agrícola")
+st.markdown("Integración Total: Del campo automatizado al mercado digital en Yucatán.")
 
-tab_mercado, tab_calidad, tab_mapa, tab_tienda = st.tabs([
-    "📈 Inteligencia de Mercado", 
-    "🏅 Auditoría de Calidad", 
-    "📍 Puntos de Venta",
-    "🛒 Escalabilidad"
+# ==========================================
+# PESTAÑAS PRINCIPALES
+# ==========================================
+tab_mercado, tab_calidad, tab_tienda = st.tabs([
+    "📈 Mercado y Tendencias", 
+    "🏅 Reporte de mi Huerto", 
+    "🛒 Catálogo Kool-Box"
 ])
 
 # ==========================================
-# PESTAÑA 1: MERCADO Y PROYECCIONES
+# PESTAÑA 1: MERCADO Y TENDENCIAS HISTÓRICAS
 # ==========================================
 with tab_mercado:
-    st.subheader("Análisis de Precios (Mérida, Yucatán)")
+    st.subheader("Análisis de Precios (Central de Abastos Mérida)")
     
+    # KPIs de hoy
     col1, col2, col3 = st.columns(3)
-    col1.metric("🌶️ Chile Habanero", "$55.50", "Tendencia a la alta")
-    col2.metric("🍈 Papaya Maradol", "$18.20", "-$0.50 (Baja demanda)")
-    col3.metric("🍅 Tomate Saladette", "$22.00", "Estable")
+    col1.metric("🌶️ Chile Habanero", "$55.50 /kg", "+$2.50 (Sube)")
+    col2.metric("🍈 Papaya Maradol", "$18.20 /kg", "-$0.50 (Baja)")
+    col3.metric("🍅 Tomate Saladette", "$22.00 /kg", "Estable")
     
     st.divider()
     
-    col_chart, col_calc = st.columns([2, 1])
+    # INTERACCIÓN: Botones para historial de años
+    st.markdown("### 📊 Comportamiento Histórico (2021 - 2026)")
+    st.write("Selecciona un cultivo para ver cómo ha cambiado su precio en los últimos 5 años.")
     
-    with col_chart:
-        st.markdown("**Predicción Semanal (Simulación de Modelo Predictivo)**")
-        # Datos simulados con proyección futura
-        fechas = pd.date_range(start=date.today() - timedelta(days=4), periods=10)
-        datos_ia = pd.DataFrame({
-            'Chile Habanero (Histórico + Predicción)': [51, 52, 53, 55.5, 55.5, 56.5, 58.0, 59.5, 60.0, 61.5],
-            'Límite de Riesgo': [45]*10
-        }, index=fechas)
-        st.area_chart(datos_ia)
+    # Botones de selección rápida (Radio horizontal simula botones)
+    cultivo_seleccionado = st.radio(
+        "Filtro de Cultivo:", 
+        ["🌶️ Chile Habanero", "🍈 Papaya Maradol", "🍅 Tomate Saladette"], 
+        horizontal=True
+    )
+    
+    # Generador de datos de prueba (Simulación de 5 años por meses)
+    fechas_historicas = pd.date_range(start="2021-01-01", end="2026-02-01", freq="ME")
+    
+    if cultivo_seleccionado == "🌶️ Chile Habanero":
+        # Simulamos que el habanero ha subido mucho por sequías
+        precios = np.linspace(35, 55, len(fechas_historicas)) + np.random.normal(0, 3, len(fechas_historicas))
+    elif cultivo_seleccionado == "🍈 Papaya Maradol":
+        precios = np.linspace(15, 18, len(fechas_historicas)) + np.random.normal(0, 1.5, len(fechas_historicas))
+    else:
+        precios = np.linspace(18, 22, len(fechas_historicas)) + np.random.normal(0, 2, len(fechas_historicas))
+        
+    df_historico = pd.DataFrame({'Precio (MXN)': precios}, index=fechas_historicas)
+    
+    # Mostramos la gráfica interactiva
+    st.line_chart(df_historico, color="#2e7d32")
 
-    with col_calc:
-        st.markdown("<div class='kpi-card'>", unsafe_allow_html=True)
-        st.markdown("#### 🧮 Calculadora de Trato Justo")
-        kilos = st.number_input("Kilos de Habanero a vender:", min_value=10, value=50, step=10)
-        st.success(f"**Exige al intermediario:**\n# ${kilos * 55.50:,.2f} MXN")
-        st.caption("Basado en el precio actual de $55.50/kg")
-        st.markdown("</div>", unsafe_allow_html=True)
+    st.divider()
+    
+    # Calculadora rápida
+    st.markdown("#### 🧮 Calculadora de Trato Justo")
+    kilos = st.number_input(f"¿Cuántos kilos de {cultivo_seleccionado.split(' ')[1]} vas a vender?", min_value=10, value=50, step=10)
+    precio_actual = df_historico['Precio (MXN)'].iloc[-1]
+    st.success(f"**💰 Exige al comprador:** ${kilos * precio_actual:,.2f} MXN")
 
 # ==========================================
-# PESTAÑA 2: AUDITORÍA DE CALIDAD (EL PUENTE CON ARDUINO)
+# PESTAÑA 2: REPORTE DEL HUERTO (EL PIN DEL ARDUINO)
 # ==========================================
 with tab_calidad:
-    st.subheader("Sincronización con tu Hardware Kool-Box")
-    st.write("Tu Arduino cuidó tus plantas. Ahora valida ese esfuerzo.")
+    st.subheader("Sincronización con Sensores Kool-Box")
+    st.write("Escribe el PIN de 4 dígitos que generó tu sistema en el campo para desempaquetar el reporte de tu cosecha.")
     
-    col_pin, col_result = st.columns([1, 2])
+    st.info("💡 **Tips para el Jurado:** Prueba con **95A2** (Cosecha Excelente) o **60X1** (Cosecha con problemas de riego).")
     
+    col_pin, col_vacio = st.columns([1, 2])
     with col_pin:
-        codigo_usuario = st.text_input("Ingresa el PIN de la pantalla LCD:", max_chars=4, help="Usa el código 95A2 para la demo")
-        validar = st.button("Validar Registro de Sensores", use_container_width=True)
+        codigo_usuario = st.text_input("Ingresa tu PIN:", max_chars=4).upper()
         
-    with col_result:
-        if validar and codigo_usuario:
-            if codigo_usuario.upper() == "95A2":
-                st.balloons()
-                st.success("✅ **Sincronización Exitosa: Score 95%**")
-                st.progress(0.95)
-                st.write("Los registros del Arduino confirman que la humedad del suelo se mantuvo en el rango óptimo (60%-80%) durante todo el ciclo de cultivo.")
+    if codigo_usuario:
+        st.divider()
+        if codigo_usuario == "95A2":
+            st.balloons()
+            st.success("✅ **Sincronización Exitosa: Cosecha Grado A (Premium)**")
+            
+            # DASHBOARD AMIGABLE DE SENSORES
+            st.markdown("### 📊 Parámetros de tu Cosecha")
+            st.write("Tu Arduino registró las siguientes condiciones promedio durante el ciclo:")
+            
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                st.markdown("<div class='sensor-card'><h3>💧 78%</h3><p>Humedad del Suelo</p><span style='color:green'>Óptimo</span></div>", unsafe_allow_html=True)
+            with c2:
+                st.markdown("<div class='sensor-card'><h3>🧪 6.8</h3><p>Nivel de pH</p><span style='color:green'>Neutro/Ideal</span></div>", unsafe_allow_html=True)
+            with c3:
+                st.markdown("<div class='sensor-card'><h3>🌡️ 24°C</h3><p>Temperatura Promedio</p><span style='color:green'>Estable</span></div>", unsafe_allow_html=True)
+            with c4:
+                st.markdown("<div class='sensor-card'><h3>☀️ 85%</h3><p>Exposición Solar</p><span style='color:green'>Suficiente</span></div>", unsafe_allow_html=True)
                 
-                # Simulación de descarga de documento
-                st.download_button(
-                    label="📄 Descargar Certificado NOM-004 (PDF)",
-                    data="Simulacion de datos de validacion. El producto es Grado A.",
-                    file_name="KoolBox_Certificado_Calidad.txt",
-                    mime="text/plain",
-                    use_container_width=True
-                )
-            else:
-                st.error("❌ Código no reconocido. Intenta con 95A2 para la demostración.")
+            st.write("")
+            st.progress(0.95, text="Cumplimiento de la Norma NOM-004")
+            
+            st.download_button(
+                label="📄 Descargar Certificado de Calidad (PDF)",
+                data="Simulacion de Certificado Grado A. Listo para venta en Central de Abastos.",
+                file_name="Certificado_KoolBox.txt",
+                mime="text/plain"
+            )
+
+        elif codigo_usuario == "60X1":
+            st.warning("⚠️ **Sincronización Exitosa: Cosecha Grado C (Atención Requerida)**")
+            
+            st.markdown("### 📊 Parámetros de tu Cosecha")
+            st.write("Se detectaron anomalías en el campo. Revisa tu sistema de riego.")
+            
+            c1, c2, c3, c4 = st.columns(4)
+            with c1:
+                st.markdown("<div class='sensor-card'><h3>💧 45%</h3><p>Humedad del Suelo</p><span style='color:red'>Muy Seco</span></div>", unsafe_allow_html=True)
+            with c2:
+                st.markdown("<div class='sensor-card'><h3>🧪 5.2</h3><p>Nivel de pH</p><span style='color:orange'>Ácido</span></div>", unsafe_allow_html=True)
+            with c3:
+                st.markdown("<div class='sensor-card'><h3>🌡️ 32°C</h3><p>Temperatura Promedio</p><span style='color:red'>Alta</span></div>", unsafe_allow_html=True)
+            with c4:
+                st.markdown("<div class='sensor-card'><h3>☀️ 90%</h3><p>Exposición Solar</p><span style='color:green'>Suficiente</span></div>", unsafe_allow_html=True)
+                
+            st.write("")
+            st.progress(0.60, text="Cumplimiento parcial de la Norma NOM-004")
+            
+        else:
+            st.error("❌ Código no reconocido. Verifica la pantalla de tu Arduino.")
 
 # ==========================================
-# PESTAÑA 3: GEOLOCALIZACIÓN
-# ==========================================
-with tab_mapa:
-    st.subheader("📍 Puntos de Venta Estratégicos")
-    st.write("¿No quieres usar intermediarios? Lleva tu producto directamente a estos mercados de alta demanda.")
-    
-    # Coordenadas de Mérida (Central de Abastos y Lucas de Gálvez)
-    mercados = pd.DataFrame({
-        'lat': [20.9576, 20.9634, 20.9850],
-        'lon': [-89.6542, -89.6225, -89.6150],
-        'Mercado': ["Central de Abastos", "Mercado Lucas de Gálvez", "Mercado Alemán"]
-    })
-    
-    st.map(mercados, zoom=12)
-    st.caption("Puntos rojos: Mercados con déficit de Chile Habanero reportado hoy.")
-
-# ==========================================
-# PESTAÑA 4: CATÁLOGO
+# PESTAÑA 3: CATÁLOGO
 # ==========================================
 with tab_tienda:
-    st.subheader("Crece tu infraestructura paso a paso")
+    st.subheader("Mejora tu infraestructura paso a paso")
     col_a, col_b = st.columns(2)
     with col_a:
         st.info("💧 **Nivel 2: Riego Automático ($3,500 MXN)**\n\nAgrega electroválvulas a tu Arduino. Olvídate de regar a mano.")
