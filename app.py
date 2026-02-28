@@ -90,6 +90,15 @@ with tab_calidad:
             st.balloons()
             st.success("✅ **Sincronización Exitosa: Cosecha Grado A (Premium)**")
             
+            # --- NUEVO: TRAZABILIDAD DEL HUERTO ---
+            st.markdown("#### 🧑‍🌾 Información del Productor")
+            col_info1, col_info2, col_info3 = st.columns(3)
+            col_info1.markdown("**👨‍🌾 Nombre:**<br>Angel Canche", unsafe_allow_html=True)
+            col_info2.markdown("**🏡 Unidad Productiva:**<br>Kool-Box Sur", unsafe_allow_html=True)
+            col_info3.markdown("**📍 Ubicación:**<br>Mérida, Yucatán", unsafe_allow_html=True)
+            st.write("") # Espaciador
+            # --------------------------------------
+            
             c1, c2, c3, c4 = st.columns(4)
             with c1: st.markdown("<div class='sensor-card'><h3>💧 78%</h3><p>Humedad</p><span style='color:#69f0ae;'>Óptimo</span></div>", unsafe_allow_html=True)
             with c2: st.markdown("<div class='sensor-card'><h3>🧪 6.8</h3><p>pH</p><span style='color:#69f0ae;'>Ideal</span></div>", unsafe_allow_html=True)
@@ -117,6 +126,15 @@ with tab_calidad:
         # --- CASO 2: CALIDAD MALA ---
         elif codigo_usuario == "60X1":
             st.warning("⚠️ **Sincronización Exitosa: Cosecha Grado C (Atención)**")
+            
+            # --- NUEVO: TRAZABILIDAD DEL HUERTO ---
+            st.markdown("#### 🧑‍🌾 Información del Productor")
+            col_info1, col_info2, col_info3 = st.columns(3)
+            col_info1.markdown("**👨‍🌾 Nombre:**<br>Don Roberto", unsafe_allow_html=True)
+            col_info2.markdown("**🏡 Unidad Productiva:**<br>Parcela El Zapote", unsafe_allow_html=True)
+            col_info3.markdown("**📍 Ubicación:**<br>Oxkutzcab, Yucatán", unsafe_allow_html=True)
+            st.write("") # Espaciador
+            # --------------------------------------
             
             c1, c2, c3, c4 = st.columns(4)
             with c1: st.markdown("<div class='sensor-card'><h3>💧 45%</h3><p>Humedad</p><span style='color:#ff5252;'>Muy Seco</span></div>", unsafe_allow_html=True)
