@@ -4,150 +4,116 @@ import numpy as np
 from datetime import timedelta, date
 
 # --- CONFIGURACIÓN DE LA APP ---
-st.set_page_config(page_title="Kool-Box Portal", page_icon="🌱", layout="centered")
+st.set_page_config(page_title="Kool-Box Ecosystem", page_icon="🌱", layout="wide")
 
-# --- CSS PARA DISEÑO DE APP MÓVIL ---
 st.markdown("""
 <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    .block-container { padding-top: 2rem; padding-bottom: 0rem; }
-    .catalogo-card {
-        background-color: #ffffff; padding: 20px; border-radius: 15px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); margin-bottom: 20px;
-        border-left: 5px solid #2e7d32;
-    }
+    #MainMenu {visibility: hidden;} footer {visibility: hidden;} header {visibility: hidden;}
+    .kpi-card { background-color: #f1f8e9; padding: 15px; border-radius: 10px; border-left: 5px solid #2e7d32; }
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown("<h1 style='text-align: center; color: #2e7d32;'>🌱 Kool-Box</h1>", unsafe_allow_html=True)
-st.markdown("<p style='text-align: center; font-size: 16px;'>Tu aliado para precios justos en Yucatán.</p>", unsafe_allow_html=True)
+st.title("🌱 Kool-Box: Ecosistema Inteligente")
+st.markdown("Integración Total: Del campo automatizado al mercado digital.")
+
+tab_mercado, tab_calidad, tab_mapa, tab_tienda = st.tabs([
+    "📈 Inteligencia de Mercado", 
+    "🏅 Auditoría de Calidad", 
+    "📍 Puntos de Venta",
+    "🛒 Escalabilidad"
+])
 
 # ==========================================
-# CREACIÓN DE PESTAÑAS (TABS)
+# PESTAÑA 1: MERCADO Y PROYECCIONES
 # ==========================================
-tab_precios, tab_calidad, tab_catalogo = st.tabs(["📊 Mercado", "🏅 Calidad", "🛒 Tienda"])
-
-# ==========================================
-# PESTAÑA 1: PRECIOS, GRÁFICAS Y CALCULADORA
-# ==========================================
-with tab_precios:
-    st.markdown("### 📈 Tendencias de Hoy (Mérida)")
+with tab_mercado:
+    st.subheader("Análisis de Precios (Mérida, Yucatán)")
     
-    # 1. TARJETAS DE MÉTRICAS (KPIs con Deltas)
     col1, col2, col3 = st.columns(3)
-    col1.metric(label="🌶️ Chile Habanero", value="$55.50", delta="+$2.50 vs ayer")
-    col2.metric(label="🍈 Papaya Maradol", value="$18.20", delta="-$0.80 vs ayer", delta_color="inverse")
-    col3.metric(label="🍅 Tomate Saladette", value="$22.00", delta="Estable", delta_color="off")
+    col1.metric("🌶️ Chile Habanero", "$55.50", "Tendencia a la alta")
+    col2.metric("🍈 Papaya Maradol", "$18.20", "-$0.50 (Baja demanda)")
+    col3.metric("🍅 Tomate Saladette", "$22.00", "Estable")
     
     st.divider()
+    
+    col_chart, col_calc = st.columns([2, 1])
+    
+    with col_chart:
+        st.markdown("**Predicción Semanal (Simulación de Modelo Predictivo)**")
+        # Datos simulados con proyección futura
+        fechas = pd.date_range(start=date.today() - timedelta(days=4), periods=10)
+        datos_ia = pd.DataFrame({
+            'Chile Habanero (Histórico + Predicción)': [51, 52, 53, 55.5, 55.5, 56.5, 58.0, 59.5, 60.0, 61.5],
+            'Límite de Riesgo': [45]*10
+        }, index=fechas)
+        st.area_chart(datos_ia)
 
-    # 2. GRÁFICA INTERACTIVA DE HISTORIAL (Generación de datos realistas)
-    st.markdown("### 📊 Historial de la semana")
-    st.write("Mira cómo se ha movido el mercado en los últimos 7 días.")
-    
-    # Generar fechas de los últimos 7 días
-    hoy = date.today()
-    fechas = [(hoy - timedelta(days=i)).strftime("%d %b") for i in range(6, -1, -1)]
-    
-    # Datos de tendencia (Simulados de forma realista)
-    datos_grafica = pd.DataFrame({
-        'Chile Habanero': [48.0, 49.5, 51.0, 50.0, 52.5, 53.0, 55.5],
-        'Tomate Saladette': [21.5, 22.0, 22.5, 22.0, 21.5, 22.0, 22.0]
-    }, index=fechas)
-    
-    st.line_chart(datos_grafica)
-
-    st.divider()
-    
-    # 3. CALCULADORA INTERACTIVA
-    st.markdown("### 🧮 Calcula tu venta")
-    productos = ["Chile Habanero", "Papaya Maradol", "Tomate Saladette"]
-    precios = [55.50, 18.20, 22.00]
-    df_precios = pd.DataFrame({"Producto": productos, "Precio": precios})
-    
-    col_a, col_b = st.columns(2)
-    with col_a:
-        producto_elegido = st.selectbox("¿Qué vendes?", productos)
-    with col_b:
-        kilos = st.number_input("¿Kilos a vender?", min_value=1, value=50)
-    
-    precio_actual = df_precios[df_precios['Producto'] == producto_elegido]['Precio'].values[0]
-    ganancia_total = kilos * precio_actual
-    
-    if st.button("💰 Calcular pago justo", use_container_width=True):
-        st.success(f"Por {kilos}kg de {producto_elegido}, debes recibir: **${ganancia_total:,.2f} MXN**")
+    with col_calc:
+        st.markdown("<div class='kpi-card'>", unsafe_allow_html=True)
+        st.markdown("#### 🧮 Calculadora de Trato Justo")
+        kilos = st.number_input("Kilos de Habanero a vender:", min_value=10, value=50, step=10)
+        st.success(f"**Exige al intermediario:**\n# ${kilos * 55.50:,.2f} MXN")
+        st.caption("Basado en el precio actual de $55.50/kg")
+        st.markdown("</div>", unsafe_allow_html=True)
 
 # ==========================================
-# PESTAÑA 2: VALIDACIÓN CON BARRA DE PROGRESO
+# PESTAÑA 2: AUDITORÍA DE CALIDAD (EL PUENTE CON ARDUINO)
 # ==========================================
 with tab_calidad:
-    st.markdown("### 🏅 Valida tu Cosecha")
-    st.info("💡 Ingresa el código **95A2** para probar el sistema.")
-    codigo_usuario = st.text_input("Ingresa el PIN de tu Kool-Box:", max_chars=4)
-
-    if codigo_usuario:
-        if len(codigo_usuario) == 4 and codigo_usuario[1:3].isdigit():
-            final_score = int(codigo_usuario[1:3])
-            st.write("---")
-            
-            # Barra de progreso visual
-            st.write("**Nivel de cumplimiento NOM-004:**")
-            st.progress(final_score / 100.0)
-            
-            if final_score > 90:
-                st.balloons()
-                st.success(f"🥇 **CALIDAD PREMIUM ({final_score}%)**")
-                st.write("Humedad perfecta. Tienes poder para negociar el precio máximo.")
-            elif final_score > 70:
-                st.info(f"🥈 **CALIDAD ESTÁNDAR ({final_score}%)**")
-            else:
-                st.warning(f"🥉 **ATENCIÓN ({final_score}%)**")
-        else:
-            st.error("❌ PIN inválido.")
-
-# ==========================================
-# PESTAÑA 3: CATÁLOGO DE UPGRADES
-# ==========================================
-with tab_catalogo:
-    st.markdown("### 🛒 Mejora tu Producción")
+    st.subheader("Sincronización con tu Hardware Kool-Box")
+    st.write("Tu Arduino cuidó tus plantas. Ahora valida ese esfuerzo.")
     
-    if 'producto_seleccionado' not in st.session_state:
-        st.session_state['producto_seleccionado'] = None
-
-    # Tarjeta 1
-    st.markdown("""
-    <div class="catalogo-card">
-        <h4 style="margin-top:0;">🌱 Nivel 1: Kool-Box Base ($1,500)</h4>
-        <p>Monitoreo offline de humedad y temperatura.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Adquirir Nivel 1", key="btn1"):
-        st.session_state['producto_seleccionado'] = "Kool-Box Base"
-
-    # Tarjeta 2
-    st.markdown("""
-    <div class="catalogo-card">
-        <h4 style="margin-top:0;">💧 Nivel 2: Riego Inteligente ($3,500)</h4>
-        <p>Válvulas automáticas para regar solo cuando se necesita.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    if st.button("Adquirir Nivel 2", key="btn2"):
-        st.session_state['producto_seleccionado'] = "Riego Inteligente"
-
-    # Formulario de Compra
-    if st.session_state['producto_seleccionado']:
-        st.divider()
-        st.markdown(f"### 📦 Finalizar Pedido: {st.session_state['producto_seleccionado']}")
+    col_pin, col_result = st.columns([1, 2])
+    
+    with col_pin:
+        codigo_usuario = st.text_input("Ingresa el PIN de la pantalla LCD:", max_chars=4, help="Usa el código 95A2 para la demo")
+        validar = st.button("Validar Registro de Sensores", use_container_width=True)
         
-        with st.form("formulario_compra"):
-            nombre = st.text_input("Nombre completo")
-            municipio = st.text_input("Municipio (Ej. Oxkutzcab)")
-            submit = st.form_submit_button("Generar Orden de Compra", use_container_width=True)
-            
-            if submit:
-                if nombre and municipio:
-                    st.success(f"✅ ¡Pedido confirmado! Enviaremos tu equipo a {municipio}.")
-                else:
-                    st.error("⚠️ Por favor, llena tus datos.")
+    with col_result:
+        if validar and codigo_usuario:
+            if codigo_usuario.upper() == "95A2":
+                st.balloons()
+                st.success("✅ **Sincronización Exitosa: Score 95%**")
+                st.progress(0.95)
+                st.write("Los registros del Arduino confirman que la humedad del suelo se mantuvo en el rango óptimo (60%-80%) durante todo el ciclo de cultivo.")
+                
+                # Simulación de descarga de documento
+                st.download_button(
+                    label="📄 Descargar Certificado NOM-004 (PDF)",
+                    data="Simulacion de datos de validacion. El producto es Grado A.",
+                    file_name="KoolBox_Certificado_Calidad.txt",
+                    mime="text/plain",
+                    use_container_width=True
+                )
+            else:
+                st.error("❌ Código no reconocido. Intenta con 95A2 para la demostración.")
+
+# ==========================================
+# PESTAÑA 3: GEOLOCALIZACIÓN
+# ==========================================
+with tab_mapa:
+    st.subheader("📍 Puntos de Venta Estratégicos")
+    st.write("¿No quieres usar intermediarios? Lleva tu producto directamente a estos mercados de alta demanda.")
+    
+    # Coordenadas de Mérida (Central de Abastos y Lucas de Gálvez)
+    mercados = pd.DataFrame({
+        'lat': [20.9576, 20.9634, 20.9850],
+        'lon': [-89.6542, -89.6225, -89.6150],
+        'Mercado': ["Central de Abastos", "Mercado Lucas de Gálvez", "Mercado Alemán"]
+    })
+    
+    st.map(mercados, zoom=12)
+    st.caption("Puntos rojos: Mercados con déficit de Chile Habanero reportado hoy.")
+
+# ==========================================
+# PESTAÑA 4: CATÁLOGO
+# ==========================================
+with tab_tienda:
+    st.subheader("Crece tu infraestructura paso a paso")
+    col_a, col_b = st.columns(2)
+    with col_a:
+        st.info("💧 **Nivel 2: Riego Automático ($3,500 MXN)**\n\nAgrega electroválvulas a tu Arduino. Olvídate de regar a mano.")
+        st.button("Cotizar Nivel 2")
+    with col_b:
+        st.warning("☀️ **Nivel 3: Off-Grid ($6,000 MXN)**\n\nPanel solar y batería. Tu huerto funcionará sin pagar electricidad.")
+        st.button("Cotizar Nivel 3")
