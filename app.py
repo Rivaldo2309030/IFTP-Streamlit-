@@ -93,7 +93,7 @@ with tab_calidad:
             # --- NUEVO: TRAZABILIDAD DEL HUERTO ---
             st.markdown("#### 🧑‍🌾 Información del Productor")
             col_info1, col_info2, col_info3 = st.columns(3)
-            col_info1.markdown("**👨‍🌾 Nombre:**<br>Angel Canche", unsafe_allow_html=True)
+            col_info1.markdown("**👨‍🌾 Nombre:**<br>Don Julio", unsafe_allow_html=True)
             col_info2.markdown("**🏡 Unidad Productiva:**<br>Kool-Box Sur", unsafe_allow_html=True)
             col_info3.markdown("**📍 Ubicación:**<br>Mérida, Yucatán", unsafe_allow_html=True)
             st.write("") # Espaciador
@@ -215,4 +215,5 @@ with tab_tienda:
         st.write("📸 Instagram: @koolbox_agro")
         st.markdown("**📍 Taller Central:**")
         st.write("Mérida, Yucatán")
+
 
