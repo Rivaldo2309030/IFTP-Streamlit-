@@ -4,7 +4,7 @@ import numpy as np
 from datetime import date
 
 # --- CONFIGURACIÓN DE LA APP ---
-st.set_page_config(page_title="Kool-Box Ecosystem", page_icon="🌱", layout="wide")
+st.set_page_config(page_title="Agri-core", page_icon="🌱", layout="wide")
 
 st.markdown("""
 <style>
@@ -18,7 +18,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.title("🌱 Kool-Box: Inteligencia Agrícola")
+st.title("🌱 Agri-core: Inteligencia Agrícola")
 st.markdown("Integración Total: Del campo automatizado al mercado digital en Yucatán.")
 
 # --- DATOS BASE DEL MERCADO ---
@@ -215,3 +215,4 @@ with tab_tienda:
         st.write("📸 Instagram: @koolbox_agro")
         st.markdown("**📍 Taller Central:**")
         st.write("Mérida, Yucatán")
+
